@@ -1,0 +1,27 @@
+
+FROM apache/airflow:2.2.5-python3.8
+
+ENV AIRFLOW_HOME=/opt/airflow
+
+USER root
+
+RUN pip install --no-cache-dir pandas sqlalchemy psycopg2-binary
+
+# Install OpenJDK-11
+RUN apt update && \
+    apt-get install -y openjdk-11-jdk && \
+    apt-get install -y ant && \
+    apt-get clean;
+
+# Set JAVA_HOME
+ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64/
+RUN export JAVA_HOME
+
+RUN mkdir ${AIRFLOW_HOME}/jar
+RUN curl https://jdbc.postgresql.org/download/postgresql-42.3.4.jar --output ${AIRFLOW_HOME}/jar/postgresql-42.3.4.jar
+
+
+WORKDIR $AIRFLOW_HOME
+USER $AIRFLOW_UID
+
+RUN pip install apache-airflow-providers-apache-spark

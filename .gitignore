@@ -1,0 +1,3 @@
+*.pyc
+logs/
+de_project/database/
