@@ -8,7 +8,7 @@ services:
       POSTGRES_USER: "user"
       POSTGRES_PASSWORD: "password1"
     volumes:
-      - "./database:/var/lib/postgresql/data:rw"
+      - "F:/test/database:/var/lib/postgresql/data:rw"
     ports:
       - "5432:5432"
     networks:
@@ -18,4 +18,4 @@ services:
 networks:
   airflow:
     external:
-      name: airflow_default
+      name: data_ingestion_project_2_default

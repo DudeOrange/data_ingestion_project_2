@@ -14,8 +14,6 @@ services:
       - '8090:8080'
     volumes:
       - jar:/opt/airflow/jar:ro
-    networks:
-      - airflow
 
   spark-worker:
     image: bitnami/spark:latest
@@ -31,13 +29,7 @@ services:
       - SPARK_SSL_ENABLED=no
     volumes:
       - jar:/opt/airflow/jar:ro
-    networks:
-      - airflow
+
 
 volumes:
   jar:
-
-networks:
-  airflow:
-    external:
-      name: airflow_default

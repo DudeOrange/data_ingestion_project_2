@@ -67,6 +67,7 @@ x-airflow-common:
     PG_PORT: "${PG_PORT}"
     PG_DATABASE: "${PG_DATABASE}"
     SPARK_APPLICATION: "${SPARK_APPLICATION}"
+    HDFS_PATH: "${HDFS_PATH}"
 
   volumes:
     - .:/opt/airflow/dags
@@ -85,6 +86,7 @@ x-airflow-common:
 services:
   postgres:
     image: postgres:13
+    container_name: airflow-postgres
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
@@ -98,6 +100,7 @@ services:
     restart: always
 
   airflow-webserver:
+    container_name: airflow-webserver
     <<: *airflow-common
     command: webserver
     ports:
@@ -114,6 +117,7 @@ services:
         condition: service_completed_successfully
 
   airflow-scheduler:
+    container_name: airflow-scheduler
     <<: *airflow-common
     command: scheduler
     healthcheck:
@@ -128,6 +132,7 @@ services:
         condition: service_completed_successfully
 
   airflow-init:
+    container_name: airflow-init
     <<: *airflow-common
     entrypoint: /bin/bash
     # yamllint disable rule:line-length
