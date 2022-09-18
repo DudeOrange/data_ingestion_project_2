@@ -5,7 +5,7 @@ services:
     image: bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8
     container_name: namenode
     volumes:
-      - F:/test/hdfs/namenode:/hadoop/dfs/name
+      - ./hdfs/namenode:/hadoop/dfs/name
     environment:
       - CLUSTER_NAME=hive
     env_file:
@@ -17,7 +17,7 @@ services:
     image: bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8
     container_name: datanode
     volumes:
-      - F:/test/hdfs/datanode:/hadoop/dfs/data
+      - ./hdfs/datanode:/hadoop/dfs/data
     env_file:
       - ./hadoop-hive.env
     environment:
@@ -57,6 +57,6 @@ services:
     image: bde2020/hive-metastore-postgresql:2.3.0
     container_name: hive-metastore-postgresql
     volumes:
-      - F:/test/metastore-postgresql/postgresql/data:/var/lib/postgresql/data
+      - ./metastore-postgresql/postgresql/data:/var/lib/postgresql/data
     depends_on:
       - datanode

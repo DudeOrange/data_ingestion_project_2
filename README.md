@@ -1,30 +1,1 @@
-# Data ingestion project #
----
-## О проекте ##
-
-Реализуем ETL pipline, который забирает данные об обращениях в полицию в Сан-Франциско ([link](https://data.sfgov.org/Public-Safety/Police-Department-Incident-Reports-2018-to-Present/wg3w-h783)) и помещает их в базу данных.
-
-Используемые технологии:
-
-* Postgres - база данных;
-* Python для написания скриптов;
-* Airflow, так как данные на сайте периодически обновляются будем запускать скрипты по расписанию - раз в месяц;
-* Docker - база данных и Airflow будут работать в контейнерах;
-* Bash - в скрипте скачивания файла;
-
-Пайплайн:
-
-1. Скачиваем csv файл с данными и сохраняем локально.
-2. Проверям корректность данных перед записью в базу.
-3. Создаем таблицу в базе данных и записываем в нее данные из файла.
-
-Для использования проекта нужно запустить файлы:
-
-* ./docker-compose.yaml (запускает сетап airflow)
-* ./de_project/docker-compose.yaml (поднимает базу данных Postgres).
-
-
-
-
-
-
+# Data ingestion project #---## О проекте ##Реализуем ETL pipline, который забирает данные об обращениях в полицию в Сан-Франциско ([link](https://data.sfgov.org/Public-Safety/Police-Department-Incident-Reports-2018-to-Present/wg3w-h783)) и помещает их в базу данных. В папке Dags находятся два скрипта: первый загружает данные в БД Postgres, второй перемещает данные в NoSQL БД Hive.Используемые технологии:* Postgres, Hive - базы данных;* Python для написания скриптов;* Apache Hadoop. Для работы БД Hive используется файловая система HDFS, работающая на 1 узле NameNode и 1 узле DataNode;* PySpark - используется для работы с данными на кластере Hadoop;* Airflow, так как данные на сайте периодически обновляются будем запускать скрипты по расписанию - раз в месяц;* Docker - база данных и Airflow будут работать в контейнерах;* Bash - в скрипте скачивания файла;Пайплайн:1. Скачиваем csv файл с данными и сохраняем локально.2. Проверям корректность данных перед записью в базу.3. Создаем таблицу в базе данных Postgres и записываем в нее данные из файла.4. Забираем данные из таблицы Postgres и записываем в партицированный parquet-файл в HDFS.5. Создаем external-таблицу в Hive на основе parquet-файла.---## Запуск проекта ##Для использования проекта потребуется установить на ваш ПК [Docker](https://docs.docker.com/get-docker/).Затем скопировать проект на ПК с помощью команды: ```git clone https://github.com/DudeOrange/data_ingestion_project_2.git```После в командной строке зайти в папку проекта и выполнить команды:* docker build -f Dockerfile.Airflow .* docker-compose -f docker-compose.Airflow.yaml -f docker-compose.Spark.yaml -f docker-compose.Hive.yaml up -d* cd de_project* docker-compose up -dAirflow UI откроется по адресу http://localhost:8080. Для входа используются Username: airflow, Password: airflow (при желании логин и пароль можно изменить в  файле docker-compose.Airflow.yaml).Для корректной работы скрипта на Spark требуется настроить подключение к нему:* Зайти в меню: Admin -> Connections. Нажать "Add new record".* Указать параметры:  Connection Id: spark_local, Connection Type: Spark, Host: spark://spark:7077
